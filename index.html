@@ -1,0 +1,637 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Villa Corvina · La notte</title>
+<meta name="theme-color" content="#0b0908">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0908; --ink:#efe6d6; --muted:#a8998a; --dim:#6f6358;
+  --blood:#b3262c; --blood-soft:#7b1e22; --gold:#c9a45c; --line:rgba(239,230,214,.14);
+  --card:rgba(16,13,12,.78);
+  --display:'IM Fell English SC', Georgia, serif; --body:'EB Garamond', Georgia, serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased}
+body{overflow-x:hidden}
+button{font-family:var(--body);color:inherit;cursor:pointer}
+#rain{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.6}
+#flash{position:fixed;inset:0;background:#dfe6ff;opacity:0;pointer-events:none;z-index:50;mix-blend-mode:screen}
+.vignette{position:fixed;inset:0;pointer-events:none;z-index:1;background:radial-gradient(ellipse at 50% 40%,transparent 35%,rgba(0,0,0,.75) 100%)}
+.wrap{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:24px 20px 40px;display:flex;flex-direction:column;gap:20px;min-height:100%}
+header{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:12px}
+.brand{font-family:var(--display);font-size:clamp(20px,3vw,28px);letter-spacing:.06em;color:var(--gold);display:flex;align-items:center;gap:10px}
+.clocks{display:flex;gap:22px;font-size:15px;color:var(--muted)}
+.clocks b{display:block;font-family:var(--display);font-weight:400;font-size:24px;color:var(--ink);letter-spacing:.04em}
+.icon-btn{background:transparent;border:1px solid var(--line);border-radius:999px;min-width:44px;min-height:44px;padding:0 14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:16px}
+.icon-btn:hover{border-color:var(--gold)}
+.icon-btn svg{width:20px;height:20px}
+
+.stage{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px}
+@media (max-width:820px){.stage{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:22px 24px;backdrop-filter:blur(2px)}
+.act-label{font-family:var(--display);color:var(--blood);font-size:18px;letter-spacing:.12em}
+.act-title{font-family:var(--display);font-weight:400;font-size:clamp(38px,6.5vw,68px);line-height:1.02;margin:6px 0 4px}
+.act-course{font-style:italic;color:var(--muted);font-size:20px}
+.act-text{font-size:20px;line-height:1.5;margin:14px 0 0;max-width:60ch}
+.villa-time{margin-top:14px;font-size:16px;color:var(--muted)}
+.villa-time span{color:var(--gold);font-family:var(--display);font-size:20px}
+
+.timer{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.count{font-family:var(--display);font-size:clamp(64px,11vw,120px);line-height:1;letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.count.late{color:var(--blood);animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.45}}
+.count-sub{color:var(--muted);font-size:16px}
+.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.btn{background:transparent;border:1px solid var(--line);border-radius:4px;min-height:44px;padding:0 16px;font-size:17px}
+.btn:hover{border-color:var(--gold)}
+.btn.big{min-height:52px;font-size:18px;padding:0 18px}
+.btn.next{border-color:var(--gold);color:var(--gold)}
+.btn:disabled{opacity:.35;cursor:default}
+.btn.primary{background:var(--blood-soft);border-color:var(--blood)}
+.btn.primary:hover{background:var(--blood)}
+.btn.seance{background:#120d1c;border-color:#5b4a86;font-family:var(--display);font-size:20px;letter-spacing:.05em;min-height:56px;padding:0 24px}
+.btn.seance:hover{border-color:#a08ad6}
+
+.progress{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.step{border:1px solid var(--line);border-radius:4px;padding:10px 10px 8px;background:rgba(0,0,0,.25);text-align:left;font-size:14px;color:var(--dim);min-height:64px;display:flex;flex-direction:column;gap:2px}
+.step b{font-family:var(--display);font-weight:400;font-size:16px;color:var(--muted)}
+.step.done{color:var(--dim);opacity:.6}
+.step.now{border-color:var(--gold);color:var(--ink);background:rgba(201,164,92,.08)}
+.step.now b{color:var(--gold)}
+@media (max-width:820px){.progress{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+.sound h2{font-family:var(--display);font-weight:400;font-size:24px;margin:0 0 4px;color:var(--gold)}
+.sound p{margin:0 0 14px;color:var(--muted);font-size:16px}
+.mixer{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.ch{border:1px solid var(--line);border-radius:4px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.ch label{display:flex;justify-content:space-between;align-items:center;font-size:17px;gap:8px}
+.ch input[type=range]{width:100%;accent-color:var(--gold)}
+.toggle{appearance:none;width:42px;height:24px;border-radius:999px;background:#3a322c;position:relative;cursor:pointer;flex:0 0 auto;transition:background .2s}
+.toggle::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#efe6d6;transition:transform .2s}
+.toggle:checked{background:var(--blood)}
+.toggle:checked::after{transform:translateX(18px)}
+.weather{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px;font-size:17px}
+.weather select{background:#1b1512;color:var(--ink);border:1px solid var(--line);border-radius:4px;min-height:44px;padding:0 10px;font-family:var(--body);font-size:17px}
+.fx{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+
+footer{color:var(--dim);font-size:14px;text-align:center;margin-top:auto}
+
+/* overlays */
+.overlay{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(5,4,4,.94)}
+.overlay[hidden]{display:none}
+.gate{max-width:560px;text-align:center;display:flex;flex-direction:column;gap:18px;align-items:center}
+.gate h1{font-family:var(--display);font-weight:400;font-size:clamp(40px,8vw,72px);line-height:1;margin:0}
+.gate p{font-size:20px;color:var(--muted);margin:0;line-height:1.5}
+#dark{background:#000;z-index:200;cursor:pointer;flex-direction:column;gap:12px}
+#dark .hint{color:#1c1c1c;font-size:14px;user-select:none}
+#tolls{position:fixed;inset:0;z-index:150;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:rgba(0,0,0,.88);pointer-events:none}
+#tolls[hidden]{display:none}
+#tolls .n{font-family:var(--display);font-size:clamp(90px,18vw,180px);color:var(--ink);line-height:1}
+#tolls .t{color:var(--muted);font-size:20px;font-style:italic}
+.ending{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:60;background:var(--blood-soft);border:1px solid var(--blood);padding:12px 20px;border-radius:4px;font-size:18px;display:none}
+.ending.show{display:block}
+
+#scene{position:fixed;inset:0;z-index:0;pointer-events:none;transition:filter .06s}
+#scene svg{display:block;width:100%;height:100%}
+#scene .clouds{animation:drift 90s linear infinite alternate}
+@keyframes drift{from{transform:translateX(-60px)}to{transform:translateX(60px)}}
+#scene .win{animation:flicker 7s ease-in-out infinite}
+#scene .w2{animation-duration:9s;animation-delay:-3s}#scene .w4{animation-duration:5.5s;animation-delay:-1s}#scene .w6{animation-duration:11s}
+#scene .w3,#scene .w5{animation:none}
+@keyframes flicker{0%,100%{opacity:1}45%{opacity:.75}50%{opacity:.95}62%{opacity:.6}70%{opacity:1}}
+.drawer{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.55);display:flex;justify-content:flex-end}
+.drawer[hidden]{display:none}
+.drawer-panel{width:min(560px,100%);height:100%;overflow-y:auto;border-radius:0;background:rgba(14,11,10,.97);position:relative;padding-top:max(22px,env(safe-area-inset-top,0px));padding-bottom:max(22px,env(safe-area-inset-bottom,0px))}
+.drawer-panel .close{position:absolute;top:max(14px,env(safe-area-inset-top,0px));right:max(14px,env(safe-area-inset-right,0px))}
+.drawer-panel .more{display:flex;flex-direction:column;gap:10px;margin-top:18px;border-top:1px solid var(--line);padding-top:16px}
+.drawer-panel .more h2{margin:0}
+.drawer-panel .shortcuts{color:var(--dim);font-size:15px;margin:0}
+@media (prefers-reduced-motion:reduce){#scene .clouds,#scene .win{animation:none}}
+@media (prefers-reduced-motion:reduce){#rain{display:none}.count.late{animation:none}}
+</style>
+</head>
+<body>
+<div id="scene" aria-hidden="true">
+<svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" width="100%" height="100%">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#07090f"/><stop offset=".55" stop-color="#141925"/><stop offset="1" stop-color="#1c1f27"/>
+    </linearGradient>
+    <radialGradient id="moonGlow"><stop offset="0" stop-color="#cfd3d8" stop-opacity=".35"/><stop offset="1" stop-color="#cfd3d8" stop-opacity="0"/></radialGradient>
+    <radialGradient id="winGlow"><stop offset="0" stop-color="#f0b45a" stop-opacity=".55"/><stop offset="1" stop-color="#f0b45a" stop-opacity="0"/></radialGradient>
+    <filter id="blur18"><feGaussianBlur stdDeviation="18"/></filter>
+    <filter id="blur6"><feGaussianBlur stdDeviation="6"/></filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <circle cx="1240" cy="170" r="160" fill="url(#moonGlow)"/>
+  <circle cx="1240" cy="170" r="44" fill="#c9c6bb" opacity=".55"/>
+  <g class="clouds" filter="url(#blur18)" fill="#262b36" opacity=".9">
+    <ellipse cx="300" cy="140" rx="380" ry="70"/><ellipse cx="900" cy="110" rx="420" ry="60"/>
+    <ellipse cx="1300" cy="200" rx="300" ry="55"/><ellipse cx="1550" cy="120" rx="260" ry="60"/>
+    <ellipse cx="600" cy="260" rx="350" ry="45" fill="#1d212b"/>
+  </g>
+  <path d="M0 680 C180 640 320 655 470 625 C640 590 760 630 930 610 C1100 590 1250 625 1400 600 C1490 588 1560 600 1600 595 V900 H0Z" fill="#11141b"/>
+  <ellipse cx="800" cy="690" rx="900" ry="40" fill="#3a3f4a" opacity=".18" filter="url(#blur18)"/>
+  <path d="M0 790 C200 770 380 760 560 735 C700 715 820 698 900 694 C980 690 1060 692 1140 702 C1300 722 1460 745 1600 755 V900 H0Z" fill="#0b0d12"/>
+  <g fill="#07080b"><g transform="translate(-60,150)">
+    <path d="M760 585 c6 -40 10 -70 14 -90 c4 20 8 50 14 90z"/><path d="M800 572 c5 -36 9 -60 12 -80 c3 18 7 44 12 80z"/>
+    <path d="M1395 545 c6 -42 10 -72 14 -92 c4 20 8 52 14 92z"/><path d="M1432 560 c5 -36 9 -62 12 -82 c3 18 7 46 12 82z"/>
+    <path d="M1470 575 c5 -30 8 -52 11 -68 c3 16 6 38 11 68z"/>
+  </g></g>
+  <g transform="translate(-180,230)"><g fill="#06070a">
+    <rect x="1040" y="380" width="250" height="95"/>
+    <polygon points="1030,382 1165,330 1300,382"/>
+    <rect x="1190" y="300" width="52" height="175"/>
+    <polygon points="1182,302 1216,240 1250,302"/>
+    <rect x="1080" y="340" width="12" height="26"/><rect x="1270" y="350" width="10" height="22"/>
+    <rect x="985" y="420" width="70" height="55"/><polygon points="978,422 1020,398 1062,422"/>
+  </g>
+  <g class="wins">
+    <circle cx="1216" cy="285" r="40" fill="url(#winGlow)"/>
+    <rect class="win w1" x="1209" y="272" width="14" height="22" fill="#e9a94c"/>
+    <rect class="win w2" x="1065" y="405" width="14" height="20" fill="#e9a94c"/>
+    <rect class="win w3" x="1110" y="405" width="14" height="20" fill="#3a2a16"/>
+    <rect class="win w4" x="1155" y="405" width="14" height="20" fill="#e2a24a"/>
+    <rect class="win w5" x="1255" y="405" width="14" height="20" fill="#3a2a16"/>
+    <rect class="win w6" x="1005" y="438" width="12" height="18" fill="#d99643"/>
+    <circle cx="1162" cy="415" r="60" fill="url(#winGlow)" opacity=".6"/>
+  </g></g>
+  <path d="M0 900 V790 C200 760 380 770 560 745 C720 722 860 740 1000 760 C1200 790 1400 770 1600 760 V900Z" fill="#040506"/>
+  <g stroke="#040506" stroke-width="7" fill="none" stroke-linecap="round">
+    <path d="M190 790 C185 700 200 640 170 560"/><path d="M176 640 C140 610 120 600 90 560"/><path d="M182 600 C220 570 240 540 260 500"/>
+    <path d="M172 580 C160 540 150 520 160 480" stroke-width="4"/><path d="M110 585 C95 575 80 560 70 540" stroke-width="3"/><path d="M240 535 C265 525 285 505 300 490" stroke-width="3"/>
+  </g>
+  <ellipse cx="800" cy="800" rx="1000" ry="60" fill="#2c313b" opacity=".22" filter="url(#blur18)"/>
+</svg>
+</div>
+<canvas id="rain" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+<div id="flash" aria-hidden="true"></div>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <svg width="26" height="26" viewBox="0 0 28 28" aria-hidden="true"><path d="M18 3a11 11 0 1 0 7 19A9 9 0 0 1 18 3z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+      Villa Corvina · 31 ottobre 1928
+    </div>
+    <div class="clocks">
+      <div>Ora reale<b id="realTime">--:--</b></div>
+      <div>Meteo<b id="meteoLabel">Temporale</b></div>
+      <button class="icon-btn" id="setBtn" aria-haspopup="dialog" aria-controls="drawer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+        <span>Impostazioni</span>
+      </button>
+      <button class="icon-btn" id="fsBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+        <span id="fsLabel">Schermo intero</span>
+      </button>
+    </div>
+  </header>
+
+  <section class="stage">
+    <div class="card">
+      <div class="act-label" id="actLabel">Prologo</div>
+      <h1 class="act-title" id="actTitle">L’arrivo</h1>
+      <div class="act-course" id="actCourse">Aperitivo</div>
+      <p class="act-text" id="actText"></p>
+      <div class="villa-time">A Villa Corvina sono le <span id="villaTime">23:30</span></div>
+    </div>
+    <div class="card timer">
+      <div class="count" id="count" aria-live="off">45:00</div>
+      <div class="count-sub" id="countSub">tempo rimasto per questo atto</div>
+      <div class="row">
+        <button class="btn big" id="prevBtn">‹ Atto precedente</button>
+        <button class="btn primary" id="playBtn">Pausa</button>
+        <button class="btn big next" id="nextBtn">Atto successivo ›</button>
+      </div>
+      <button class="btn seance" id="seanceBtn" hidden>Rintocchi di mezzanotte</button>
+    </div>
+  </section>
+
+  <nav class="progress" id="progress" aria-label="Atti della serata"></nav>
+
+  <div class="drawer" id="drawer" hidden>
+  <section class="card sound drawer-panel" role="dialog" aria-modal="true" aria-labelledby="setTitle">
+    <button class="icon-btn close" id="closeDrawer" aria-label="Chiudi impostazioni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <h2 id="setTitle">Suoni della villa</h2>
+    <p>Generati dal browser, nessun file da scaricare. Il temporale si fa più forte atto dopo atto.</p>
+    <div class="weather">
+      <label for="weatherSel">Atmosfera</label>
+      <select id="weatherSel">
+        <option value="auto">Automatica (segue gli atti)</option>
+        <option value="drizzle">Pioggerella</option>
+        <option value="rain">Pioggia battente</option>
+        <option value="storm">Temporale</option>
+        <option value="tempest">Tempesta</option>
+        <option value="calm">Quiete</option>
+      </select>
+      <label for="master" style="margin-left:auto">Volume</label>
+      <input type="range" id="master" min="0" max="100" value="70" style="accent-color:var(--gold)">
+    </div>
+    <div class="mixer" id="mixer"></div>
+    <div class="fx">
+      <button class="btn" id="thunderBtn">Tuono ora</button>
+      <button class="btn" id="bellBtn">Un rintocco</button>
+      <button class="btn" id="knockBtn">Bussano alla porta</button>
+      <button class="btn" id="creakBtn">Porta che cigola</button>
+    </div>
+    <div class="more">
+      <h2>Tempo dell’atto</h2>
+      <div class="row" style="justify-content:flex-start">
+        <button class="btn" id="minusBtn">− 5 min</button>
+        <button class="btn" id="plusBtn">+ 5 min</button>
+        <button class="btn" id="resetBtn">Ricomincia questo atto</button>
+      </div>
+      <p class="shortcuts">Da computer: ← → cambia atto · spazio pausa · F schermo intero · S impostazioni. Toccando un atto nella barra ci salti direttamente.</p>
+    </div>
+  </section>
+  </div>
+</div>
+
+<div class="ending" id="ending" role="status">Il tempo di questo atto è finito: quando siete pronti, passate al prossimo.</div>
+
+<div class="overlay" id="gate">
+  <div class="gate">
+    <svg width="54" height="54" viewBox="0 0 28 28" aria-hidden="true" style="color:var(--gold)"><path d="M18 3a11 11 0 1 0 7 19A9 9 0 0 1 18 3z" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+    <h1>La Notte di Villa Corvina</h1>
+    <p>Fuori piove da tre giorni e la strada è franata. Stanotte nessuno entra e nessuno esce.</p>
+    <button class="btn primary" id="enterBtn" style="font-size:20px;min-height:52px;padding:0 28px">Entra nella villa</button>
+    <button class="btn" id="enterFsBtn" style="font-size:18px;min-height:48px">Entra a schermo intero</button>
+    <p style="font-size:15px">Attiva l’audio e alza il volume del dispositivo.</p>
+  </div>
+</div>
+
+<div id="tolls" hidden><div class="n" id="tollN">1</div><div class="t">La mezzanotte suona a Villa Corvina…</div></div>
+<div class="overlay" id="dark" hidden><div class="hint">tocca per riaccendere</div></div>
+
+<script>
+(function(){
+'use strict';
+var ACTS = [
+  {label:'Prologo', title:'L’arrivo', course:'Aperitivo', villa:'23:30', mins:45, weather:'drizzle',
+   text:'Gli ospiti arrivano a Villa Corvina. Ognuno legge la propria busta in privato. Il padrone di casa legge le regole e “Cosa sanno tutti”.'},
+  {label:'Atto I', title:'La seduta', course:'Antipasto', villa:'23:45', mins:45, weather:'rain', seance:true,
+   text:'La Contessa prende la parola. Giro di presentazioni, un minuto a testa. Poi le gocce per il cuore… e a mezzanotte la seduta spiritica.'},
+  {label:'Atto II', title:'I primi sospetti', course:'Primo', villa:'00:15', mins:45, weather:'storm',
+   text:'Lo Spirito della Contessa legge gli indizi A, B, C, D, E. Dopo ognuno, domande libere. Si risponde con la verità, ma si può tacere.'},
+  {label:'Atto III', title:'I segreti', course:'Secondo', villa:'01:30', mins:45, weather:'storm',
+   text:'Gli spiriti recapitano due buste. Poi gli indizi F, G, H. Ora le schede obbligano a rivelare di più.'},
+  {label:'Finale', title:'La verità', course:'Dolce', villa:'03:00', mins:45, weather:'tempest',
+   text:'Gli ultimi indizi. Un minuto a testa per accusare. Voto segreto: chi, perché e come. Poi lo Spirito chiede la verità.'},
+  {label:'Epilogo', title:'Riposa in pace', course:'Premi', villa:'alba', mins:20, weather:'calm',
+   text:'Punti, Detective della notte e Miglior attore. La Contessa può finalmente riposare.'}
+];
+var WEATHERS={
+  calm:{rain:0, wind:0.15, thunderEvery:0, name:'Quiete'},
+  drizzle:{rain:0.35, wind:0.25, thunderEvery:0, name:'Pioggerella'},
+  rain:{rain:0.7, wind:0.4, thunderEvery:75, name:'Pioggia battente'},
+  storm:{rain:0.85, wind:0.55, thunderEvery:40, name:'Temporale'},
+  tempest:{rain:1, wind:0.85, thunderEvery:22, name:'Tempesta'}
+};
+var KEY='villaCorvina.v1';
+var state={i:0, endAt:0, remaining:ACTS[0].mins*60000, running:true};
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+var fresh=true;
+function load(){try{var s=JSON.parse(localStorage.getItem(KEY)||'null'); if(s&&typeof s.i==='number'&&ACTS[s.i]){ state=s; fresh=false; }}catch(e){}}
+load();
+
+var $=function(id){return document.getElementById(id);};
+var progress=$('progress');
+ACTS.forEach(function(a,idx){
+  var b=document.createElement('button'); b.className='step'; b.type='button';
+  b.innerHTML='<b>'+a.label+'</b>'+a.course;
+  b.addEventListener('click',function(){goTo(idx);});
+  progress.appendChild(b);
+});
+
+function fmt(ms){
+  var neg=ms<0; ms=Math.abs(ms); var s=Math.round(ms/1000);
+  var m=Math.floor(s/60), r=s%60; return (neg?'+':'')+m+':'+(r<10?'0':'')+r;
+}
+function remaining(){return state.running? state.endAt-Date.now() : state.remaining;}
+var warned=false;
+function render(){
+  var a=ACTS[state.i];
+  $('actLabel').textContent=a.label; $('actTitle').textContent=a.title; $('actCourse').textContent=a.course;
+  $('actText').textContent=a.text; $('villaTime').textContent=a.villa;
+  $('seanceBtn').hidden=!a.seance;
+  $('playBtn').textContent=state.running?'Pausa':'Riprendi';
+  $('prevBtn').disabled=state.i===0; $('nextBtn').disabled=state.i===ACTS.length-1;
+  Array.prototype.forEach.call(progress.children,function(el,idx){
+    el.className='step'+(idx<state.i?' done':'')+(idx===state.i?' now':'');
+    el.setAttribute('aria-current',idx===state.i?'step':'false');
+  });
+  updateWeatherLabel();
+}
+function tick(){
+  var r=remaining(); var c=$('count');
+  c.textContent=fmt(r);
+  c.classList.toggle('late',r<0);
+  $('countSub').textContent=r<0?'tempo scaduto da':'tempo rimasto per questo atto';
+  if(r<=0 && !warned){warned=true; $('ending').classList.add('show'); if(audio.ready){bell(0);setTimeout(function(){bell(0.4)},2600);}}
+  if(r>0 && warned){warned=false; $('ending').classList.remove('show');}
+  var d=new Date(); $('realTime').textContent=(d.getHours()<10?'0':'')+d.getHours()+':'+(d.getMinutes()<10?'0':'')+d.getMinutes();
+}
+function startAct(i){
+  state.i=i; state.remaining=ACTS[i].mins*60000; state.running=true; state.endAt=Date.now()+state.remaining;
+  warned=false; $('ending').classList.remove('show'); save(); render(); tick(); applyWeather();
+}
+function goTo(i){ if(i===state.i) return; startAct(i); if(audio.ready) bell(0.2); }
+$('nextBtn').onclick=function(){ if(state.i<ACTS.length-1) goTo(state.i+1); };
+$('prevBtn').onclick=function(){ if(state.i>0) goTo(state.i-1); };
+$('playBtn').onclick=function(){
+  if(state.running){state.remaining=state.endAt-Date.now(); state.running=false;}
+  else{state.endAt=Date.now()+state.remaining; state.running=true;}
+  save(); render(); tick();
+};
+function shift(min){ if(state.running) state.endAt+=min*60000; else state.remaining+=min*60000; save(); tick(); }
+$('plusBtn').onclick=function(){shift(5)}; $('minusBtn').onclick=function(){shift(-5)};
+if(!state.endAt){state.endAt=Date.now()+state.remaining;}
+render(); tick(); setInterval(tick,500);
+
+/* settings drawer */
+function openSet(){ $('drawer').hidden=false; $('closeDrawer').focus(); }
+function closeSet(){ $('drawer').hidden=true; $('setBtn').focus(); }
+$('setBtn').onclick=openSet; $('closeDrawer').onclick=closeSet;
+$('drawer').addEventListener('click',function(e){ if(e.target===this) closeSet(); });
+$('resetBtn').onclick=function(){ startAct(state.i); };
+/* fullscreen + wake lock */
+function toggleFs(){
+  var d=document, el=d.documentElement;
+  try{
+    if(!(d.fullscreenElement||d.webkitFullscreenElement)){
+      if(el.requestFullscreen) el.requestFullscreen(); else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    } else { if(d.exitFullscreen) d.exitFullscreen(); else if(d.webkitExitFullscreen) d.webkitExitFullscreen(); }
+  }catch(e){}
+}
+$('fsBtn').onclick=toggleFs;
+function fsChanged(){ var on=!!(document.fullscreenElement||document.webkitFullscreenElement); $('fsLabel').textContent=on?'Esci da schermo intero':'Schermo intero'; }
+document.addEventListener('fullscreenchange',fsChanged); document.addEventListener('webkitfullscreenchange',fsChanged);
+var wl=null;
+function keepAwake(){ try{ if('wakeLock' in navigator) navigator.wakeLock.request('screen').then(function(l){wl=l}).catch(function(){}); }catch(e){} }
+document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible') keepAwake(); });
+
+/* ===================== AUDIO ===================== */
+var audio={ready:false};
+var ctx, master, noiseBuf, noiseBuf2, brownBuf, brownBuf2, channels={}, rainMod, rainHiss, rainMid, rainBody, windLayers=[];
+var CH=[
+  {id:'rain', name:'Pioggia', on:true, vol:60},
+  {id:'wind', name:'Vento', on:true, vol:40},
+  {id:'thunder', name:'Tuoni', on:true, vol:75},
+  {id:'fire', name:'Camino', on:true, vol:35},
+  {id:'clock', name:'Pendola', on:false, vol:30},
+  {id:'heart', name:'Battito', on:false, vol:50}
+];
+var mixer=$('mixer');
+CH.forEach(function(c){
+  var d=document.createElement('div'); d.className='ch';
+  d.innerHTML='<label><span>'+c.name+'</span><input type="checkbox" class="toggle" id="t_'+c.id+'" '+(c.on?'checked':'')+' aria-label="'+c.name+' acceso"></label>'+
+    '<input type="range" min="0" max="100" value="'+c.vol+'" id="v_'+c.id+'" aria-label="Volume '+c.name+'">';
+  mixer.appendChild(d);
+});
+function chLevel(id){ var on=$('t_'+id).checked; return on? $('v_'+id).value/100 : 0; }
+
+function makeNoise(seconds, brown){
+  var len=ctx.sampleRate*seconds, b=ctx.createBuffer(1,len,ctx.sampleRate), d=b.getChannelData(0), last=0;
+  for(var i=0;i<len;i++){ var w=Math.random()*2-1; if(brown){ last=(last+0.02*w)/1.02; d[i]=last*3.5; } else d[i]=w; }
+  return b;
+}
+function loopSrc(buf){ var s=ctx.createBufferSource(); s.buffer=buf; s.loop=true; s.start(0, Math.random()*buf.duration); return s; }
+
+var weather={rain:0.6,wind:0.4,thunderEvery:40,name:'Temporale'};
+
+function currentWeatherKey(){ var v=$('weatherSel').value; return v==='auto'? ACTS[state.i].weather : v; }
+function updateWeatherLabel(){ $('meteoLabel').textContent=WEATHERS[currentWeatherKey()].name; }
+function applyWeather(){ weather=WEATHERS[currentWeatherKey()]; updateWeatherLabel(); setDrops(weather.rain); updateLevels(); scheduleThunder(); }
+$('weatherSel').onchange=applyWeather;
+
+function initAudio(){
+  var AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
+  ctx=new AC(); master=ctx.createGain(); master.gain.value=$('master').value/100;
+  var comp=ctx.createDynamicsCompressor(); master.connect(comp); comp.connect(ctx.destination);
+  noiseBuf=makeNoise(11,false); noiseBuf2=makeNoise(7.3,false); brownBuf=makeNoise(13,true); brownBuf2=makeNoise(9.7,true);
+
+  // RAIN: three layers on different loop lengths, each drifting over time
+  var rg=ctx.createGain(); rg.gain.value=0; rg.connect(master); channels.rain=rg;
+  rainMod=ctx.createGain(); rainMod.gain.value=1; rainMod.connect(rg);
+  function rainLayer(buf,type,f,q,g,pan){ var s=loopSrc(buf); var fl=ctx.createBiquadFilter(); fl.type=type; fl.frequency.value=f; fl.Q.value=q;
+    var gg=ctx.createGain(); gg.gain.value=g; s.connect(fl); fl.connect(gg);
+    if(ctx.createStereoPanner){ var p=ctx.createStereoPanner(); p.pan.value=pan; gg.connect(p); p.connect(rainMod); } else gg.connect(rainMod);
+    return {f:fl,g:gg}; }
+  rainHiss=rainLayer(noiseBuf,'highpass',1200,0.5,0.8,-0.3);
+  rainMid=rainLayer(noiseBuf2,'bandpass',2500,0.6,0.7,0.35);
+  rainBody=rainLayer(brownBuf,'lowpass',700,0.7,1.6,0);
+
+  // WIND: two moving bands + a whistle that appears only in some gusts
+  var wg=ctx.createGain(); wg.gain.value=0; var wBoost=ctx.createGain(); wBoost.gain.value=3; wg.connect(wBoost); wBoost.connect(master);
+  channels.wind=wg; windLayers=[];
+  [[brownBuf,450,0.9,0.5,-0.4],[brownBuf2,900,1.4,0.35,0.4],[noiseBuf2,1100,9,0,0]].forEach(function(p){
+    var s=loopSrc(p[0]); var bp=ctx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=p[1]; bp.Q.value=p[2];
+    var g=ctx.createGain(); g.gain.value=p[3]; s.connect(bp); bp.connect(g);
+    if(ctx.createStereoPanner){ var pn=ctx.createStereoPanner(); pn.pan.value=p[4]; g.connect(pn); pn.connect(wg); } else g.connect(wg);
+    windLayers.push({f:bp,g:g,base:p[1]});
+  });
+
+  // fire: low rumble + crackles
+  var f=loopSrc(brownBuf), flp=ctx.createBiquadFilter(); flp.type='lowpass'; flp.frequency.value=300;
+  var fg=ctx.createGain(); fg.gain.value=0; f.connect(flp); flp.connect(fg); fg.connect(master); channels.fire=fg;
+  crackleLoop();
+
+  audio.ready=true; updateLevels(); applyWeather(); clockLoop(); heartLoop(); weatherDirector(); gustLoop(); dripLoop();
+}
+function updateLevels(){
+  if(!audio.ready) return;
+  var t=ctx.currentTime;
+  channels.rain.gain.setTargetAtTime(0.35*weather.rain*chLevel('rain'),t,1.5);
+  channels.wind.gain.setTargetAtTime(0.25*weather.wind*chLevel('wind'),t,2);
+  channels.fire.gain.setTargetAtTime(0.5*chLevel('fire'),t,1);
+}
+CH.forEach(function(c){ $('t_'+c.id).addEventListener('change',function(){updateLevels(); if(c.id==='thunder') scheduleThunder();}); $('v_'+c.id).addEventListener('input',updateLevels); });
+$('master').addEventListener('input',function(){ if(audio.ready) master.gain.setTargetAtTime(this.value/100,ctx.currentTime,0.1); });
+
+function burst(dur,freq,type,gain,when){
+  var s=ctx.createBufferSource(); s.buffer=noiseBuf; var flt=ctx.createBiquadFilter(); flt.type=type; flt.frequency.value=freq;
+  var g=ctx.createGain(); var t=(when||ctx.currentTime);
+  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(gain,t+0.003); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  s.connect(flt); flt.connect(g); g.connect(master); s.start(t, Math.random()*2); s.stop(t+dur+0.05);
+}
+function crackleLoop(){
+  if(audio.ready && $('t_fire').checked){ var lv=chLevel('fire'); var n=1+Math.floor(Math.random()*3);
+    for(var k=0;k<n;k++) burst(0.02+Math.random()*0.05, 2000+Math.random()*3000,'bandpass',0.5*lv*Math.random(), ctx.currentTime+k*0.04); }
+  setTimeout(crackleLoop, 120+Math.random()*900);
+}
+
+
+/* variety: rain waves, wind gusts, drips */
+function weatherDirector(){
+  if(audio.ready && !seanceActive){
+    var t=ctx.currentTime;
+    rainMod.gain.setTargetAtTime(0.5+Math.random()*0.8,t,2+Math.random()*4);
+    rainHiss.f.frequency.setTargetAtTime(700+Math.random()*1400,t,3);
+    rainMid.f.frequency.setTargetAtTime(1400+Math.random()*2800,t,3);
+    rainMid.g.gain.setTargetAtTime(0.25+Math.random()*0.75,t,3);
+    rainBody.f.frequency.setTargetAtTime(350+Math.random()*700,t,4);
+  }
+  setTimeout(weatherDirector, 4000+Math.random()*9000);
+}
+function gustLoop(){
+  if(audio.ready && !seanceActive && weather.wind>0){
+    var t=ctx.currentTime, up=1.5+Math.random()*3, hold=0.8+Math.random()*4, down=3+Math.random()*7, peak=0.3+Math.random()*(0.6+weather.wind);
+    windLayers.forEach(function(L,i){
+      if(i<2){
+        var cur=L.g.gain.value; L.g.gain.cancelScheduledValues(t); L.g.gain.setValueAtTime(cur,t);
+        L.g.gain.linearRampToValueAtTime(0.3+peak,t+up); L.g.gain.linearRampToValueAtTime(0.3+peak*(0.6+Math.random()*0.4),t+up+hold);
+        L.g.gain.linearRampToValueAtTime(0.15+Math.random()*0.35,t+up+hold+down);
+        var f=L.base*(0.6+Math.random()*1.0); L.f.frequency.setTargetAtTime(f*1.5,t,up/2); L.f.frequency.setTargetAtTime(f,t+up+hold,down/2);
+      } else if(Math.random()<0.4){
+        L.f.frequency.cancelScheduledValues(t); L.f.frequency.setValueAtTime(600+Math.random()*700,t); L.f.frequency.linearRampToValueAtTime(800+Math.random()*1000,t+up+hold);
+        L.g.gain.cancelScheduledValues(t); L.g.gain.setValueAtTime(0,t); L.g.gain.linearRampToValueAtTime(0.5*weather.wind,t+up); L.g.gain.linearRampToValueAtTime(0,t+up+hold+down*0.6);
+      }
+    });
+  }
+  setTimeout(gustLoop, 5000+Math.random()*15000);
+}
+function dripLoop(){
+  if(audio.ready && !seanceActive && weather.rain>0 && $('t_rain').checked){
+    var lv=chLevel('rain')*weather.rain, t=ctx.currentTime, o=ctx.createOscillator(), f=800+Math.random()*2000;
+    o.type='sine'; o.frequency.setValueAtTime(f,t); o.frequency.exponentialRampToValueAtTime(f*0.55,t+0.08);
+    var g=ctx.createGain(); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.07*lv*(0.3+Math.random()),t+0.004); g.gain.exponentialRampToValueAtTime(0.0001,t+0.12);
+    o.connect(g);
+    if(ctx.createStereoPanner){ var pn=ctx.createStereoPanner(); pn.pan.value=Math.random()*2-1; g.connect(pn); pn.connect(master); } else g.connect(master);
+    o.start(t); o.stop(t+0.15);
+  }
+  setTimeout(dripLoop, 120+Math.random()*(weather.rain>0.8?600:1600));
+}
+
+/* thunder */
+var thunderTimer=null;
+function scheduleThunder(){
+  clearTimeout(thunderTimer);
+  if(!audio.ready || !weather.thunderEvery) return;
+  var base=weather.thunderEvery*1000; var wait=base*0.5+Math.random()*base;
+  thunderTimer=setTimeout(function(){ if($('t_thunder').checked && !seanceActive) thunder(Math.random()); scheduleThunder(); }, wait);
+}
+function lightning(strength){
+  var fl=$('flash'), sc=$('scene'); var seq=[0.7,0,0.45,0,0.9,0]; var t=0;
+  seq.forEach(function(v,i){ t+= i%2? 60+Math.random()*60 : 40+Math.random()*80; setTimeout(function(){ fl.style.opacity=v*strength; sc.style.filter=v?'brightness('+(1+v*strength*3)+')':''; }, t); });
+  setTimeout(function(){fl.style.opacity=0; sc.style.filter='';},t+120);
+}
+function thunder(dist){
+  if(!audio.ready) return;
+  dist = (dist==null)? 0.3 : dist; var lv=chLevel('thunder'); if(lv<=0) return;
+  lightning(0.55*(1-dist)+0.15);
+  var delay=0.3+dist*3.2, t=ctx.currentTime+delay, dur=4+Math.random()*4;
+  var s=ctx.createBufferSource(); s.buffer=brownBuf; var lp=ctx.createBiquadFilter(); lp.type='lowpass';
+  lp.frequency.setValueAtTime(dist<0.3?1800:700,t); lp.frequency.exponentialRampToValueAtTime(120,t+dur);
+  var g=ctx.createGain(); g.gain.setValueAtTime(0,t);
+  var peak=(1.3-dist*0.8)*lv; g.gain.linearRampToValueAtTime(peak,t+0.06);
+  var tt=t+0.06; for(var k=0;k<5;k++){ tt+=0.3+Math.random()*0.9; g.gain.linearRampToValueAtTime(peak*(0.25+Math.random()*0.7),tt); }
+  g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  s.connect(lp); lp.connect(g); g.connect(master); s.start(t); s.stop(t+dur+0.1);
+  if(dist<0.35) burst(0.25,3000,'highpass',0.6*lv,t);
+}
+
+/* bell (church toll) */
+function bell(when){
+  if(!audio.ready) return;
+  var t=ctx.currentTime+(when||0), f0=196;
+  [[0.5,0.5,5],[1,1,4],[1.19,0.45,3],[1.56,0.35,2.4],[2,0.4,2],[2.51,0.2,1.6],[2.66,0.15,1.4],[3.01,0.12,1.2]].forEach(function(p){
+    var o=ctx.createOscillator(); o.type='sine'; o.frequency.value=f0*p[0];
+    var g=ctx.createGain(); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(p[1]*0.35,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+p[2]+1.5);
+    o.connect(g); g.connect(master); o.start(t); o.stop(t+p[2]+1.6);
+  });
+}
+/* clock */
+var tickTock=false;
+function clockLoop(){
+  if(audio.ready && $('t_clock').checked && !seanceActive){ tickTock=!tickTock; burst(0.03, tickTock?2600:1900,'bandpass',0.9*chLevel('clock')); }
+  setTimeout(clockLoop,1000);
+}
+/* heartbeat */
+function thump(t,amp){ var o=ctx.createOscillator(); o.frequency.setValueAtTime(70,t); o.frequency.exponentialRampToValueAtTime(40,t+0.15);
+  var g=ctx.createGain(); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(amp,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+0.25);
+  o.connect(g); g.connect(master); o.start(t); o.stop(t+0.3); }
+function heartLoop(){
+  var on=audio.ready && ($('t_heart').checked || seanceActive);
+  if(on){ var lv=seanceActive?0.9:chLevel('heart'); var t=ctx.currentTime; thump(t,lv); thump(t+0.28,lv*0.7); }
+  setTimeout(heartLoop, seanceActive?850:1000);
+}
+/* door */
+function knock(){ if(!audio.ready) return; var t=ctx.currentTime; [0,0.32,0.62].forEach(function(d){ thump(t+d,1.1); burst(0.06,500,'lowpass',0.8,t+d); }); }
+function creak(){
+  if(!audio.ready) return; var t=ctx.currentTime, d=2.2;
+  var o=ctx.createOscillator(); o.type='sawtooth'; o.frequency.setValueAtTime(90,t);
+  for(var k=1;k<10;k++) o.frequency.linearRampToValueAtTime(70+Math.random()*80, t+k*d/10);
+  var bp=ctx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=900; bp.Q.value=6;
+  var g=ctx.createGain(); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.25,t+0.2); g.gain.linearRampToValueAtTime(0.18,t+d-0.4); g.gain.linearRampToValueAtTime(0,t+d);
+  o.connect(bp); bp.connect(g); g.connect(master); o.start(t); o.stop(t+d+0.05);
+}
+$('thunderBtn').onclick=function(){thunder(0.1)}; $('bellBtn').onclick=function(){bell(0)};
+$('knockBtn').onclick=knock; $('creakBtn').onclick=creak;
+
+/* ===================== SEANCE ===================== */
+var seanceActive=false, darkTimer=null;
+$('seanceBtn').onclick=function(){
+  if(seanceActive) return; seanceActive=true;
+  if(audio.ready){ channels.fire.gain.setTargetAtTime(0,ctx.currentTime,1); channels.rain.gain.setTargetAtTime(0.12*chLevel('rain'),ctx.currentTime,2); }
+  var tolls=$('tolls'), n=$('tollN'); tolls.hidden=false; var k=0;
+  (function ring(){
+    k++; n.textContent=k; bell(0);
+    if(k<12) setTimeout(ring,1700);
+    else setTimeout(function(){ tolls.hidden=true; goDark(); },2200);
+  })();
+};
+function goDark(){
+  $('dark').hidden=false;
+  if(audio.ready) channels.wind.gain.setTargetAtTime(0.35*chLevel('wind')+0.04,ctx.currentTime,1.5);
+  clearTimeout(darkTimer); darkTimer=setTimeout(lightUp,90000);
+}
+function lightUp(){
+  if($('dark').hidden) return;
+  clearTimeout(darkTimer); $('dark').hidden=true; seanceActive=false;
+  thunder(0.02); updateLevels(); scheduleThunder();
+}
+$('dark').addEventListener('click',lightUp);
+
+/* ===================== RAIN VISUAL ===================== */
+var cv=$('rain'), cx=cv.getContext('2d'), drops=[], target=60;
+function size(){ cv.width=innerWidth*devicePixelRatio; cv.height=innerHeight*devicePixelRatio; }
+addEventListener('resize',size); size();
+function setDrops(level){ target=Math.round(level*260); }
+function frame(){
+  while(drops.length<target) drops.push({x:Math.random()*cv.width,y:Math.random()*-cv.height,v:8+Math.random()*10,l:10+Math.random()*18});
+  if(drops.length>target) drops.length=target;
+  cx.clearRect(0,0,cv.width,cv.height); cx.strokeStyle='rgba(180,190,210,.35)'; cx.lineWidth=1*devicePixelRatio; cx.beginPath();
+  var dpr=devicePixelRatio;
+  for(var i=0;i<drops.length;i++){ var d=drops[i]; cx.moveTo(d.x,d.y); cx.lineTo(d.x-2*dpr,d.y+d.l*dpr); d.y+=d.v*dpr; d.x-=0.6*dpr;
+    if(d.y>cv.height){ d.y=-20; d.x=Math.random()*cv.width*1.1; } }
+  cx.stroke(); requestAnimationFrame(frame);
+}
+setDrops(WEATHERS[currentWeatherKey()].rain); frame();
+
+/* ===================== GATE ===================== */
+$('enterFsBtn').onclick=function(){ toggleFs(); $('enterBtn').onclick(); };
+$('enterBtn').onclick=function(){
+  $('gate').hidden=true; keepAwake();
+  if(fresh){ fresh=false; startAct(0); }
+  try{ initAudio(); }catch(e){}
+  if(audio.ready){ thunder(0.5); }
+};
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape' && !$('drawer').hidden){ closeSet(); return; }
+  if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT') return;
+  if(e.key==='ArrowRight') $('nextBtn').click();
+  else if(e.key==='ArrowLeft') $('prevBtn').click();
+  else if(e.key===' '){ e.preventDefault(); $('playBtn').click(); }
+  else if(e.key==='f'||e.key==='F') toggleFs();
+  else if(e.key==='s'||e.key==='S'){ if($('drawer').hidden) openSet(); else closeSet(); }
+});
+})();
+</script>
+</body>
+</html>
