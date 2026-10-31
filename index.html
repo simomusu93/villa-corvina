@@ -215,7 +215,7 @@ footer{color:var(--dim);font-size:14px;text-align:center;margin-top:auto}
 <div class="vignette" aria-hidden="true"></div>
 <div id="flash" aria-hidden="true"></div>
 
-<div class="wrap">
+<div class="wrap" id="wrap">
   <header>
     <div class="brand">
       <svg width="26" height="26" viewBox="0 0 28 28" aria-hidden="true"><path d="M18 3a11 11 0 1 0 7 19A9 9 0 0 1 18 3z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
@@ -390,7 +390,7 @@ function render(){
     el.setAttribute('aria-current',idx===state.i?'step':'false');
   });
   updateWeatherLabel();
-  renderClues(); $('accuseBtn').hidden=state.i!==4; $('narrBtn').textContent=state.i===0?'Racconta la storia':'Leggi ad alta voce';
+  renderClues(); if(typeof fit==='function') setTimeout(fit,0); $('accuseBtn').hidden=state.i!==4; $('narrBtn').textContent=state.i===0?'Racconta la storia':'Leggi ad alta voce';
 }
 function tick(){
   var r=remaining(); var c=$('count');
@@ -418,6 +418,20 @@ $('plusBtn').onclick=function(){shift(5)}; $('minusBtn').onclick=function(){shif
 if(!state.endAt){state.endAt=Date.now()+state.remaining;}
 render(); tick(); setInterval(tick,500);
 
+/* fit to landscape screens (TV, laptop): shrink the page so it fits with room for the villa */
+function fit(){
+  var w=$('wrap'); if(!w) return; w.style.zoom='';
+  var W=innerWidth, H=innerHeight;
+  if(W>H && W>=640){
+    var top=w.getBoundingClientRect().top, bottom=$('progress').getBoundingClientRect().bottom+24;
+    var h=bottom-top, target=H*0.8;
+    if(h>target) w.style.zoom=Math.max(0.45, target/h).toFixed(3);
+  }
+}
+addEventListener('resize',fit);
+document.addEventListener('fullscreenchange',function(){ setTimeout(fit,150); });
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+setTimeout(fit,300);
 /* settings drawer */
 function openSet(){ $('drawer').hidden=false; $('closeDrawer').focus(); }
 function closeSet(){ $('drawer').hidden=true; $('setBtn').focus(); }
