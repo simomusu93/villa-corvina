@@ -249,7 +249,7 @@ footer{color:var(--dim);font-size:14px;text-align:center;margin-top:auto}
       </div>
     </div>
     <div class="card timer">
-      <div class="count" id="count" aria-live="off">45:00</div>
+      <div class="count" id="count" aria-live="off">15:00</div>
       <div class="count-sub" id="countSub">tempo rimasto per questo atto</div>
       <div class="row">
         <button class="btn big" id="prevBtn">‹ Atto precedente</button>
@@ -336,17 +336,17 @@ footer{color:var(--dim);font-size:14px;text-align:center;margin-top:auto}
 (function(){
 'use strict';
 var ACTS = [
-  {label:'Prologo', title:'L’arrivo', course:'Aperitivo', villa:'23:30', mins:45, weather:'drizzle',
+  {label:'Prologo', title:'L’arrivo', course:'Aperitivo', villa:'23:30', mins:15, weather:'drizzle',
    text:'Gli ospiti arrivano a Villa Corvina. Ognuno legge la propria busta in privato. Il padrone di casa legge le regole e “Cosa sanno tutti”.'},
-  {label:'Atto I', title:'La seduta', course:'Antipasto', villa:'23:45', mins:45, weather:'rain', seance:true,
+  {label:'Atto I', title:'La seduta', course:'Antipasto', villa:'23:45', mins:30, weather:'rain', seance:true,
    text:'La Contessa prende la parola. Giro di presentazioni, un minuto a testa. Poi le gocce per il cuore… e a mezzanotte la seduta spiritica.'},
-  {label:'Atto II', title:'I primi sospetti', course:'Primo', villa:'00:15', mins:45, weather:'storm',
+  {label:'Atto II', title:'I primi sospetti', course:'Primo', villa:'00:15', mins:30, weather:'storm',
    text:'Lo Spirito della Contessa legge gli indizi A, B, C, D, E. Dopo ognuno, domande libere. Si risponde con la verità, ma si può tacere.'},
-  {label:'Atto III', title:'I segreti', course:'Secondo', villa:'01:30', mins:45, weather:'storm',
+  {label:'Atto III', title:'I segreti', course:'Secondo', villa:'01:30', mins:30, weather:'storm',
    text:'Gli spiriti recapitano due buste. Poi gli indizi F, G, H. Ora le schede obbligano a rivelare di più.'},
-  {label:'Finale', title:'La verità', course:'Dolce', villa:'03:00', mins:45, weather:'tempest',
+  {label:'Finale', title:'La verità', course:'Dolce', villa:'03:00', mins:30, weather:'tempest',
    text:'Gli ultimi indizi. Un minuto a testa per accusare. Voto segreto: chi, perché e come. Poi lo Spirito chiede la verità.'},
-  {label:'Epilogo', title:'Riposa in pace', course:'Premi', villa:'alba', mins:20, weather:'calm',
+  {label:'Epilogo', title:'Riposa in pace', course:'Premi', villa:'alba', mins:15, weather:'calm',
    text:'Punti, Detective della notte e Miglior attore. La Contessa può finalmente riposare.'}
 ];
 var WEATHERS={
