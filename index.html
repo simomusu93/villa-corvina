@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#0b0908">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=IM+Fell+English+SC&family=Homemade+Apple&family=Schoolbell&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#0b0908; --ink:#efe6d6; --muted:#a8998a; --dim:#6f6358;
@@ -112,6 +112,48 @@ footer{color:var(--dim);font-size:14px;text-align:center;margin-top:auto}
 .drawer-panel .more h2{margin:0}
 .drawer-panel .shortcuts{color:var(--dim);font-size:15px;margin:0}
 @media (prefers-reduced-motion:reduce){#scene .clouds,#scene .win{animation:none}}
+
+.clue-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;align-items:center}
+.clue-row[hidden]{display:none}
+.clue-row .lbl{font-size:16px;color:var(--muted);margin-right:4px}
+.clue-btn{min-width:52px;min-height:52px;border:1px solid var(--gold);background:rgba(201,164,92,.08);color:var(--gold);font-family:var(--display);font-size:24px;border-radius:4px}
+.clue-btn:hover{background:rgba(201,164,92,.2)}
+.clue-btn.read{opacity:.45}
+.clue-btn.opt{border-style:dashed}
+.tool-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+#clueView{z-index:120;background:rgba(5,4,4,.9)}
+.paper{background:#efe5cf;color:#22190f;max-width:860px;width:100%;padding:clamp(24px,5vw,56px);border-radius:3px;box-shadow:0 30px 80px rgba(0,0,0,.6);position:relative;max-height:92vh;overflow-y:auto;animation:paperIn .5s ease-out}
+@keyframes paperIn{from{opacity:0;transform:translateY(20px) rotate(-1deg)}to{opacity:1;transform:none}}
+.paper .letter{position:absolute;top:20px;right:24px;width:68px;height:68px;border:3px solid #7b1e22;color:#7b1e22;font-family:var(--display);font-size:42px;display:flex;align-items:center;justify-content:center;transform:rotate(4deg)}
+.paper .kind{font-family:var(--display);color:#7b1e22;letter-spacing:.14em;font-size:18px}
+.paper h3{font-family:var(--display);font-weight:400;font-size:clamp(32px,5vw,50px);margin:4px 90px 16px 0;line-height:1.08}
+.paper p{font-size:clamp(21px,2.7vw,29px);line-height:1.5;margin:0}
+.paper .doc{margin-top:20px;border:1px solid #8c7a5b;padding:20px 26px;background:#e7dbbf;display:flex;flex-direction:column;gap:10px}
+.paper .doc-h{font-size:17px;color:#5e5248;text-align:right}
+.paper .doc-h.c{text-align:center;font-family:var(--display);letter-spacing:.12em}
+.paper .cert-t{font-family:var(--display);font-size:clamp(28px,4vw,40px);text-align:center}
+.paper .doc-b{font-style:italic}
+.paper .cert .doc-b{font-style:normal}
+.paper .doc-s{text-align:right;font-style:italic;font-size:22px}
+.paper .doc-r{text-align:right;font-size:15px;color:#5e5248;margin-top:-8px}
+.paper .hand{font-family:'Homemade Apple',cursive;font-style:normal;font-size:clamp(17px,2.2vw,22px);line-height:1.9}
+.paper .note{background:#f6efdf}
+.paper .chalk{margin-top:20px;background:#2e322f;border:14px solid #8c6a43;color:#edebe4;font-family:'Schoolbell',cursive;font-size:clamp(60px,12vw,120px);text-align:center;letter-spacing:.12em;padding:10px 0;transform:rotate(-1.5deg)}
+.paper .actions{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap}
+.paper .actions .btn{border-color:#8c7a5b;color:#22190f;background:transparent}
+.paper .actions .btn:hover{border-color:#7b1e22}
+.paper .actions .btn.primary{background:#7b1e22;color:#f6efdf;border-color:#7b1e22}
+#actCard{z-index:140;background:#000;flex-direction:column;text-align:center;gap:12px;opacity:0;transition:opacity .9s}
+#actCard.show{opacity:1}
+#actCard .l{font-family:var(--display);color:var(--blood);letter-spacing:.24em;font-size:clamp(20px,3vw,32px)}
+#actCard .t{font-family:var(--display);font-size:clamp(56px,11vw,130px);line-height:1}
+#actCard .c{font-style:italic;color:var(--muted);font-size:clamp(20px,2.5vw,28px)}
+#accuse{z-index:130;flex-direction:column;gap:16px;text-align:center}
+#accuse .t{font-family:var(--display);color:var(--blood);letter-spacing:.2em;font-size:28px}
+#accuse .n{font-family:var(--display);font-size:clamp(110px,22vw,220px);line-height:1;font-variant-numeric:tabular-nums}
+#accuse .n.out{color:var(--blood)}
+#accuse .s{color:var(--muted);font-size:20px;font-style:italic}
+#scene .win.off,#scene .glow.off{opacity:0!important;animation:none;transition:opacity 1.4s}
 @media (prefers-reduced-motion:reduce){#rain{display:none}.count.late{animation:none}}
 </style>
 </head>
@@ -152,14 +194,14 @@ footer{color:var(--dim);font-size:14px;text-align:center;margin-top:auto}
     <rect x="985" y="420" width="70" height="55"/><polygon points="978,422 1020,398 1062,422"/>
   </g>
   <g class="wins">
-    <circle cx="1216" cy="285" r="40" fill="url(#winGlow)"/>
+    <circle class="glow" cx="1216" cy="285" r="40" fill="url(#winGlow)"/>
     <rect class="win w1" x="1209" y="272" width="14" height="22" fill="#e9a94c"/>
     <rect class="win w2" x="1065" y="405" width="14" height="20" fill="#e9a94c"/>
     <rect class="win w3" x="1110" y="405" width="14" height="20" fill="#3a2a16"/>
     <rect class="win w4" x="1155" y="405" width="14" height="20" fill="#e2a24a"/>
     <rect class="win w5" x="1255" y="405" width="14" height="20" fill="#3a2a16"/>
     <rect class="win w6" x="1005" y="438" width="12" height="18" fill="#d99643"/>
-    <circle cx="1162" cy="415" r="60" fill="url(#winGlow)" opacity=".6"/>
+    <circle class="glow" cx="1162" cy="415" r="60" fill="url(#winGlow)" opacity=".6"/>
   </g></g>
   <path d="M0 900 V790 C200 760 380 770 560 745 C720 722 860 740 1000 760 C1200 790 1400 770 1600 760 V900Z" fill="#040506"/>
   <g stroke="#040506" stroke-width="7" fill="none" stroke-linecap="round">
@@ -200,6 +242,11 @@ footer{color:var(--dim);font-size:14px;text-align:center;margin-top:auto}
       <div class="act-course" id="actCourse">Aperitivo</div>
       <p class="act-text" id="actText"></p>
       <div class="villa-time">A Villa Corvina sono le <span id="villaTime">23:30</span></div>
+      <div class="clue-row" id="clueRow" hidden></div>
+      <div class="tool-row">
+        <button class="btn" id="narrBtn">Leggi ad alta voce</button>
+        <button class="btn" id="accuseBtn" hidden>Accusa · 1 minuto</button>
+      </div>
     </div>
     <div class="card timer">
       <div class="count" id="count" aria-live="off">45:00</div>
@@ -234,11 +281,21 @@ footer{color:var(--dim);font-size:14px;text-align:center;margin-top:auto}
       <input type="range" id="master" min="0" max="100" value="70" style="accent-color:var(--gold)">
     </div>
     <div class="mixer" id="mixer"></div>
+    <div class="weather" style="margin-top:14px">
+      <label for="voiceOn">Voce narrante</label>
+      <input type="checkbox" class="toggle" id="voiceOn" checked>
+      <span id="voiceInfo" style="color:var(--dim);font-size:15px"></span>
+    </div>
     <div class="fx">
       <button class="btn" id="thunderBtn">Tuono ora</button>
       <button class="btn" id="bellBtn">Un rintocco</button>
       <button class="btn" id="knockBtn">Bussano alla porta</button>
       <button class="btn" id="creakBtn">Porta che cigola</button>
+      <button class="btn" id="owlBtn">Civetta</button>
+      <button class="btn" id="organBtn">Organo lontano</button>
+      <button class="btn" id="stepsBtn">Passi sul legno</button>
+      <button class="btn" id="elenaBtn">Voce di Elena</button>
+      <button class="btn" id="whisperBtn">Sussurro “Elena”</button>
     </div>
     <div class="more">
       <h2>Tempo dell’atto</h2>
@@ -266,6 +323,12 @@ footer{color:var(--dim);font-size:14px;text-align:center;margin-top:auto}
   </div>
 </div>
 
+<div class="overlay" id="clueView" hidden><div class="paper" id="paper" role="dialog" aria-modal="true" aria-labelledby="clueTitle"></div></div>
+<div class="overlay" id="actCard" hidden aria-live="polite"><div class="l" id="acL"></div><div class="t" id="acT"></div><div class="c" id="acC"></div></div>
+<div class="overlay" id="accuse" hidden role="dialog" aria-modal="true" aria-label="Accusa">
+  <div class="t">Accusa</div><div class="n" id="accN">1:00</div><div class="s" id="accS">Chi accusi, e perché?</div>
+  <div class="row"><button class="btn primary" id="accAgain">Prossimo accusatore</button><button class="btn" id="accClose">Chiudi</button></div>
+</div>
 <div id="tolls" hidden><div class="n" id="tollN">1</div><div class="t">La mezzanotte suona a Villa Corvina…</div></div>
 <div class="overlay" id="dark" hidden><div class="hint">tocca per riaccendere</div></div>
 
@@ -327,6 +390,7 @@ function render(){
     el.setAttribute('aria-current',idx===state.i?'step':'false');
   });
   updateWeatherLabel();
+  renderClues(); $('accuseBtn').hidden=state.i!==4; $('narrBtn').textContent=state.i===0?'Racconta la storia':'Leggi ad alta voce';
 }
 function tick(){
   var r=remaining(); var c=$('count');
@@ -341,7 +405,7 @@ function startAct(i){
   state.i=i; state.remaining=ACTS[i].mins*60000; state.running=true; state.endAt=Date.now()+state.remaining;
   warned=false; $('ending').classList.remove('show'); save(); render(); tick(); applyWeather();
 }
-function goTo(i){ if(i===state.i) return; startAct(i); if(audio.ready) bell(0.2); }
+function goTo(i){ if(i===state.i) return; stopSay(); startAct(i); if(audio.ready) bell(0.2); showActCard(ACTS[i]); }
 $('nextBtn').onclick=function(){ if(state.i<ACTS.length-1) goTo(state.i+1); };
 $('prevBtn').onclick=function(){ if(state.i>0) goTo(state.i-1); };
 $('playBtn').onclick=function(){
@@ -575,13 +639,13 @@ $('thunderBtn').onclick=function(){thunder(0.1)}; $('bellBtn').onclick=function(
 $('knockBtn').onclick=knock; $('creakBtn').onclick=creak;
 
 /* ===================== SEANCE ===================== */
-var seanceActive=false, darkTimer=null;
+var seanceActive=false, darkTimer=null, wh1=null, wh2=null;
 $('seanceBtn').onclick=function(){
   if(seanceActive) return; seanceActive=true;
   if(audio.ready){ channels.fire.gain.setTargetAtTime(0,ctx.currentTime,1); channels.rain.gain.setTargetAtTime(0.12*chLevel('rain'),ctx.currentTime,2); }
   var tolls=$('tolls'), n=$('tollN'); tolls.hidden=false; var k=0;
   (function ring(){
-    k++; n.textContent=k; bell(0);
+    k++; n.textContent=k; bell(0); if(k%3===0) candleOut(k/3-1);
     if(k<12) setTimeout(ring,1700);
     else setTimeout(function(){ tolls.hidden=true; goDark(); },2200);
   })();
@@ -590,10 +654,13 @@ function goDark(){
   $('dark').hidden=false;
   if(audio.ready) channels.wind.gain.setTargetAtTime(0.35*chLevel('wind')+0.04,ctx.currentTime,1.5);
   clearTimeout(darkTimer); darkTimer=setTimeout(lightUp,90000);
+  clearTimeout(wh1); clearTimeout(wh2);
+  wh1=setTimeout(function(){ if(!$('dark').hidden) say('Elena…', {force:true,pitch:1.3,rate:0.45,volume:0.55,noDuck:true}); },12000);
+  wh2=setTimeout(function(){ if(!$('dark').hidden) say('Mamma…', {force:true,pitch:2,rate:0.5,volume:0.6,noDuck:true}); },32000);
 }
 function lightUp(){
   if($('dark').hidden) return;
-  clearTimeout(darkTimer); $('dark').hidden=true; seanceActive=false;
+  clearTimeout(darkTimer); clearTimeout(wh1); clearTimeout(wh2); stopSay(); $('dark').hidden=true; seanceActive=false; candlesOn();
   thunder(0.02); updateLevels(); scheduleThunder();
 }
 $('dark').addEventListener('click',lightUp);
@@ -614,6 +681,105 @@ function frame(){
 }
 setDrops(WEATHERS[currentWeatherKey()].rain); frame();
 
+
+/* ===================== CLUES, VOICE, ACT CARDS, ACCUSE ===================== */
+var CLUES=JSON.parse(decodeURIComponent(escape(atob('eyJBIjogeyJhY3QiOiAyLCAidGl0bGUiOiAiTGEgbGF2YWduZXR0YSIsICJ0ZXh0IjogIlN1bCB0YXZvbG8gZGVsbGEgc2VkdXRhLCBkYXZhbnRpIGFsIHBvc3RvIGRlbGxhIENvbnRlc3NhLCBj4oCZw6ggdW5hIGxhdmFnbmV0dGEgZGEgc2NvbGFyby4gSW4gZ2Vzc28sIGNvbiB1bmEgY2FsbGlncmFmaWEgaW5mYW50aWxlLCBj4oCZw6ggc2NyaXR0byBFTEVOQS4gUHJpbWEgZGVsbGEgc2VkdXRhIG5vbiBj4oCZZXJhLiIsICJleHRyYSI6ICI8ZGl2IGNsYXNzPSdjaGFsayc+RUxFTkE8L2Rpdj4ifSwgIkIiOiB7ImFjdCI6IDIsICJ0aXRsZSI6ICJJbCBjb3JwbyIsICJ0ZXh0IjogIkxhIENvbnRlc3NhIGhhIGxlIGxhYmJyYSBibHVhc3RyZSBlIGhhIGF2dXRvIHVuIGNvbmF0byBwcmltYSBkaSBtb3JpcmUuIElsIGJpY2NoaWVyZSBkaSBhc3NlbnppbyBoYSB1biBvZG9yZSBwacO5IGFtYXJvIGRlbCBzb2xpdG8uIEFsIGRpdG8gbWFuY2EgaWwgZ3Jvc3NvIGFuZWxsbyBkaSBmYW1pZ2xpYSBjaGUgcG9ydGF2YSBhIGNlbmEuIEUgbGEgYm9jY2V0dGEgZGVsbGUgZ29jY2UsIGNoZSB0dXR0aSBoYW5ubyB2aXN0byBzdWwgdGF2b2xvLCBub24gY+KAmcOoIHBpw7kuIn0sICJDIjogeyJhY3QiOiAyLCAidGl0bGUiOiAiRGljaGlhcmF6aW9uZSBkZWwgbWFnZ2lvcmRvbW8gQW5zZWxtbyIsICJ0ZXh0IjogIsKrQWxsZSB1bmRpY2kgaG8gdmlzdG8gaWwgc2lnbm9yIEJydW5pIHNjZW5kZXJlIGluIGNhbnRpbmEgY29uIHVuYSBjYXNzZXR0YSBkZWdsaSBhdHRyZXp6aS4gQWxsZSB1bmRpY2kgbWVubyB1biBxdWFydG8gbGEgc2lnbm9yYSBDb250ZXNzYSBwYXJsYXZhIGZpdHRvIGNvbiBsYSBzaWdub3JhIExhbnphIGluIHNlcnJhLiBBbGxlIHVuZGljaSBlIHRyZSBxdWFydGkgc29ubyBhbmRhdG8gYSBwcmVuZGVyZSBsZSBnb2NjZSBzdWxsYSBzY3JpdmFuaWEgZGVsbG8gc3R1ZGlvLCBjb21lIG9nbmkgc2VyYTogbGEgYm9jY2V0dGEgZXJhIGFsIHNvbGl0byBwb3N0bywgbWEgaWwgdGFwcG8gZXJhIGF2dml0YXRvIHN0b3J0by4gSG8gcGVuc2F0byBkaSBhdmVybG8gY2hpdXNvIG1hbGUgaW8uwrsifSwgIkQiOiB7ImFjdCI6IDIsICJ0aXRsZSI6ICJJbCBjYW1pbm8gZGVsbG8gc3R1ZGlvIiwgInRleHQiOiAiVHJhIGxhIGNlbmVyZSBj4oCZw6ggdW4gZnJhbW1lbnRvIGRpIGNhcnRhIGJvbGxhdGEgc2NhbXBhdG8gYWxsZSBmaWFtbWUuIFNpIGxlZ2dlOiDCq+KApnJldmlzaW9uZSBjb21wbGV0YSBkZWkgY29udGkgZGVsbOKAmWF2di4gRy4gTGFu4oCmwrsifSwgIkUiOiB7ImFjdCI6IDIsICJ0aXRsZSI6ICJMYSBnYWxsZXJpYSIsICJ0ZXh0IjogIkRpZXRybyBsYSBjb3JuaWNlIGRlbCDigJxQYWVzYWdnaW8gY29uIG11bGlub+KAnSBj4oCZw6ggdW7igJlldGljaGV0dGE6IMKrQm90dGVnYSBSZWJvcmEsIEdlbm92YSDigJMgY29waWEgbi4gMyDigJMgc2FsZG8gcmljZXZ1dG8gZGEgRS4gQy7CuyJ9LCAiRiI6IHsiYWN0IjogMywgInRpdGxlIjogIkxhIGNhbnRpbmEiLCAidGV4dCI6ICJTdWwgcXVhZHJvIGVsZXR0cmljbyDDqCBjb2xsZWdhdG8gdW4gb3JvbG9naW8gZGEgdGFzY2EgY29uIGRlaSBmaWxpIGRpIHJhbWUsIHJlZ29sYXRvIHN1bGxhIG1lenphbm90dGUuIFBlciB0ZXJyYSBj4oCZw6ggdW4gZ3VhbnRvIGJpYW5jbyBzcG9yY28gZGkgcG9sdmVyZS4ifSwgIkciOiB7ImFjdCI6IDMsICJ0aXRsZSI6ICJMYSBsZXR0ZXJhIGRpIFRvcmlubyIsICJ0ZXh0IjogIk5lbCBjYXNzZXR0byBkZWxsYSBzY3JpdmFuaWEgY+KAmcOoIHVuYSBsZXR0ZXJhLiIsICJzcGVhayI6ICJOZWwgY2Fzc2V0dG8gZGVsbGEgc2NyaXZhbmlhIGPigJnDqCB1bmEgbGV0dGVyYS4gR2VudGlsZSBDb250ZXNzYSwgbGEgY29zaWRkZXR0YSBNYWRhbWUgWmVsZGEgTW9yYW5hIMOoIGluIHJlYWx0w6AgUm9zYSBQYXV0YXNzbywgbmF0YSBhIE1vbmNhbGllcmksIGNvbmRhbm5hdGEgbmVsIDE5MjEgcGVyIHRydWZmYSBhaSBkYW5uaSBkaSB2ZWRvdmUgZmFjb2x0b3NlLiBPcGVyYSBjb24gdW4gY29tcGxpY2UsIGV4IHByZXN0aWdpYXRvcmUuIExlIGNvbnNpZ2xpbyBsYSBtYXNzaW1hIHBydWRlbnphLiIsICJleHRyYSI6ICI8ZGl2IGNsYXNzPSdkb2MnPjxkaXYgY2xhc3M9J2RvYy1oJz5BZ2VuemlhIEludmVzdGlnYXRpdmEgR3JpYmF1ZG8gwrcgVG9yaW5vLCAxMiBvdHRvYnJlIDE5Mjg8L2Rpdj48cCBjbGFzcz0nZG9jLWInPkdlbnRpbGUgQ29udGVzc2EsIGxhIGNvc2lkZGV0dGEgTWFkYW1lIFplbGRhIE1vcmFuYSDDqCBpbiByZWFsdMOgIFJvc2EgUGF1dGFzc28sIG5hdGEgYSBNb25jYWxpZXJpLCBjb25kYW5uYXRhIG5lbCAxOTIxIHBlciB0cnVmZmEgYWkgZGFubmkgZGkgdmVkb3ZlIGZhY29sdG9zZS4gT3BlcmEgY29uIHVuIGNvbXBsaWNlLCBleCBwcmVzdGlnaWF0b3JlLiBMZSBjb25zaWdsaW8gbGEgbWFzc2ltYSBwcnVkZW56YS48L3A+PGRpdiBjbGFzcz0nZG9jLXMnPkNhdi4gRS4gR3JpYmF1ZG88L2Rpdj48L2Rpdj4ifSwgIkgiOiB7ImFjdCI6IDMsICJ0aXRsZSI6ICJMYSBib3JzYSBkZWwgZG90dG9yZSIsICJ0ZXh0IjogIkxhIGJvcnNhIMOoIHJpbWFzdGEgbmVsbOKAmWluZ3Jlc3NvLiBOZWxs4oCZYXN0dWNjaW8gZGVsbGUgZmlhbGUgY+KAmcOoIHVuIGFsbG9nZ2lvIHZ1b3RvIGNvbiBs4oCZZXRpY2hldHRhIOKAnFRpbnR1cmEgZGkgZGlnaXRhbGXigJ0uIExhIGRpZ2l0YWxlIMOoIHVuIGZhcm1hY28gcGVyIGlsIGN1b3JlOyBhZCBhbHRlIGRvc2kgw6ggdW4gdmVsZW5vIGNoZSBkw6AgbmF1c2VhIGUgbGFiYnJhIGJsdWFzdHJlLiJ9LCAiSSI6IHsiYWN0IjogNCwgInRpdGxlIjogIkxhIHp1Y2NhIiwgInRleHQiOiAiRGVudHJvIGxhIHp1Y2NhIGPigJnDqCBsYSBib2NjZXR0YSBkZWxsZSBnb2NjZSwgcXVhc2kgdnVvdGEuIElsIHZldHJvIGhhIHVuIG9kb3JlIHB1bmdlbnRlIGRpIGRpc2luZmV0dGFudGUsIHF1ZWxsbyBkZWdsaSBzdHVkaSBtZWRpY2kuIn0sICJKIjogeyJhY3QiOiA0LCAidGl0bGUiOiAiSWwgY2Fzc2V0dG8gc2VncmV0byIsICJ0ZXh0IjogIlNvdHRvIGlsIHJpcGlhbm8gZGVsbGEgc2NyaXZhbmlhIGPigJnDqCB1biBkb3BwaW9mb25kby4gRGVudHJvLCB1biB2ZWNjaGlvIGNlcnRpZmljYXRvIGUgdW5hIG5vdGEgZGVsbGEgQ29udGVzc2EuIiwgInNwZWFrIjogIlNvdHRvIGlsIHJpcGlhbm8gZGVsbGEgc2NyaXZhbmlhIGPigJnDqCB1biBkb3BwaW9mb25kby4gRGVudHJvLCB1biB2ZWNjaGlvIGNlcnRpZmljYXRvIGRpIG1vcnRlOiBFbGVuYSBDb3J2aW5hLCBkaSBhbm5pIGRpZWNpLCBtb3J0YSBpbCAzIG5vdmVtYnJlIDE4OTggYWxsZSA0IGRlbCBtYXR0aW5vLiBDYXVzYTogZmViYnJlIHRpZm9pZGVhLiBGaXJtYXRvOiBkb3R0b3IgTC4gRmVycmFudGUuIEUgdW5hIG5vdGEgZGVsbGEgQ29udGVzc2EsIHNjcml0dGEgdW5hIHNldHRpbWFuYSBmYTogTmVsIGRpYXJpbyBkaSBFbGVuYSBobyBsZXR0byBjaGUgcXVlbGxhIHNlcmEgaWwgZ2lvdmFuZSBkb3R0b3JlIGxlIGRpZWRlIGxlIGdvY2NlLiBIYSBzY3JpdHRvIGZlYmJyZS4gU3Rhbm90dGUgbG8gZGlyw7IgZGF2YW50aSBhIHR1dHRpLiIsICJleHRyYSI6ICI8ZGl2IGNsYXNzPSdkb2MgY2VydCc+PGRpdiBjbGFzcz0nZG9jLWggYyc+UmVnbm8gZOKAmUl0YWxpYSDCtyBDb211bmUgZGkgQXN0aTwvZGl2PjxkaXYgY2xhc3M9J2NlcnQtdCc+Q2VydGlmaWNhdG8gZGkgTW9ydGU8L2Rpdj48cCBjbGFzcz0nZG9jLWInPkRlZnVudGE6IDxiPkVsZW5hIENvcnZpbmE8L2I+LCBkaSBhbm5pIGRpZWNpPGJyPkRhdGEgZGVsIGRlY2Vzc286IDxiPjMgbm92ZW1icmUgMTg5ODwvYj4sIG9yZSA0IGFudGltZXJpZGlhbmU8YnI+Q2F1c2E6IDxiPmZlYmJyZSB0aWZvaWRlYTwvYj48L3A+PGRpdiBjbGFzcz0nZG9jLXMgaGFuZCc+TC4gRmVycmFudGU8L2Rpdj48ZGl2IGNsYXNzPSdkb2Mtcic+aWwgbWVkaWNvIGN1cmFudGU8L2Rpdj48L2Rpdj48ZGl2IGNsYXNzPSdkb2Mgbm90ZSc+PHAgY2xhc3M9J2hhbmQnPk5lbCBkaWFyaW8gZGkgRWxlbmEgaG8gbGV0dG8gY2hlIHF1ZWxsYSBzZXJhIGlsIGdpb3ZhbmUgZG90dG9yZSBsZSBkaWVkZSBsZSBnb2NjZS4gSGEgc2NyaXR0byDigJxmZWJicmXigJ0uIFN0YW5vdHRlIGxvIGRpcsOyIGRhdmFudGkgYSB0dXR0aS4g4oCUIE8uPC9wPjwvZGl2PiJ9LCAiSyI6IHsiYWN0IjogNCwgInRpdGxlIjogIlNvbG8gc2Ugc2VydmUiLCAidGV4dCI6ICJTb3R0byBpbCBmb25kbyBkZWxsYSBib3JzYSBkZWwgZG90dG9yZSBj4oCZw6ggdW5hIHNlY29uZGEgYm9jY2V0dGEgZGkgZ29jY2UsIGlkZW50aWNhIGUgYW5jb3JhIHBpZW5hLCBjb24gbOKAmWV0aWNoZXR0YSDigJxDb250ZXNzYSBPLiBDb3J2aW5h4oCdLiIsICJvcHRpb25hbCI6IHRydWV9fQ=='))));
+var PROLOGUE='Villa Corvina, 31 ottobre 1928. Fuori piove da tre giorni e la strada per il paese è franata: stanotte nessuno entra e nessuno esce. La Contessa Ottavia Corvina, vedova, settant’anni, ha invitato a cena sei ospiti scelti con cura. Ha sempre amato le usanze inglesi, e stasera festeggia l’All Hallows’ Eve, la notte in cui il velo tra vivi e morti si fa sottile. Da trent’anni la Contessa porta il lutto per la figlia Elena, morta a dieci anni, di febbre, il 3 novembre 1898. Da qualche mese frequenta una medium torinese, Madame Zelda, e giura che Elena ha qualcosa da dirle. Stasera, a mezzanotte, ci sarà una seduta spiritica. E dopo la seduta, davanti al suo avvocato, la Contessa firmerà un nuovo testamento.';
+if(!state.read) state.read={};
+var voice=null;
+function pickVoice(){
+  try{ var vs=speechSynthesis.getVoices().filter(function(v){return /^it/i.test(v.lang);});
+    voice=vs.filter(function(v){return /Alice|Federica|Luca|Paola|Elsa|Diego|Google/i.test(v.name);})[0]||vs[0]||null;
+    $('voiceInfo').textContent= voice? 'Voce: '+voice.name : 'Nessuna voce italiana trovata su questo dispositivo';
+  }catch(e){}
+}
+var hasSpeech=('speechSynthesis' in window);
+if(hasSpeech){ pickVoice(); try{ speechSynthesis.onvoiceschanged=pickVoice; }catch(e){} } else { $('voiceInfo').textContent='Questo browser non ha la sintesi vocale'; }
+function duck(on){ if(!audio.ready) return; var v=$('master').value/100; master.gain.setTargetAtTime(on? v*0.4 : v, ctx.currentTime, 0.4); }
+function say(text,o){
+  o=o||{}; if(!hasSpeech || (!o.force && !$('voiceOn').checked)) return;
+  try{ speechSynthesis.cancel(); var u=new SpeechSynthesisUtterance(text); u.lang='it-IT'; if(voice) u.voice=voice;
+    u.rate=o.rate||0.86; u.pitch=o.pitch||0.8; u.volume=(o.volume!=null)?o.volume:1;
+    if(!o.noDuck){ u.onstart=function(){duck(true)}; u.onend=function(){duck(false)}; u.onerror=function(){duck(false)}; }
+    speechSynthesis.speak(u); }catch(e){}
+}
+function stopSay(){ try{ if(hasSpeech) speechSynthesis.cancel(); }catch(e){} duck(false); }
+
+function renderClues(){
+  if(!CLUES) return; if(!state.read) state.read={};
+  var row=$('clueRow'), act=state.i, keys=Object.keys(CLUES).filter(function(k){return CLUES[k].act===act;});
+  row.innerHTML=''; row.hidden=!keys.length; if(!keys.length) return;
+  var l=document.createElement('span'); l.className='lbl'; l.textContent='Indizi:'; row.appendChild(l);
+  keys.forEach(function(k){ var b=document.createElement('button'); b.type='button';
+    b.className='clue-btn'+(state.read[k]?' read':'')+(CLUES[k].optional?' opt':''); b.textContent=k;
+    b.setAttribute('aria-label','Indizio '+k+(CLUES[k].optional?' (solo se serve)':''));
+    b.onclick=function(){ openClue(k); }; row.appendChild(b); });
+}
+var openKey=null;
+function openClue(k){
+  var c=CLUES[k]; openKey=k; state.read[k]=true; save(); renderClues();
+  $('paper').innerHTML='<div class="letter" aria-hidden="true">'+k+'</div><div class="kind">Indizio '+k+(c.optional?' · solo se serve':'')+'</div><h3 id="clueTitle">'+c.title+'</h3><p>'+c.text+'</p>'+(c.extra||'')+
+    '<div class="actions"><button class="btn primary" id="clueSay">Leggi ad alta voce</button><button class="btn" id="clueClose">Chiudi</button></div>';
+  $('clueView').hidden=false;
+  $('clueSay').onclick=function(){ say(c.title+'. '+(c.speak||c.text), {force:true}); };
+  $('clueClose').onclick=closeClue; $('clueClose').focus();
+  if(audio.ready) creak();
+}
+function closeClue(){ $('clueView').hidden=true; stopSay(); openKey=null; }
+$('clueView').addEventListener('click',function(e){ if(e.target===this) closeClue(); });
+
+$('narrBtn').onclick=function(){ var a=ACTS[state.i]; say(state.i===0? PROLOGUE : a.label+'. '+a.title+'. '+a.text, {force:true}); };
+
+var acTimer=null;
+function showActCard(a){
+  var c=$('actCard'); $('acL').textContent=a.label; $('acT').textContent=a.title; $('acC').textContent=a.course;
+  c.hidden=false; requestAnimationFrame(function(){ c.classList.add('show'); });
+  clearTimeout(acTimer);
+  acTimer=setTimeout(function(){ c.classList.remove('show'); setTimeout(function(){ c.hidden=true; },900);
+    say(a.label+'. '+a.title+'. '+a.text); },4200);
+}
+$('actCard').addEventListener('click',function(){ clearTimeout(acTimer); this.classList.remove('show'); this.hidden=true; });
+
+var accT=null, accEnd=0;
+function accTick(){ var r=Math.max(0,accEnd-Date.now()); var s=Math.ceil(r/1000); $('accN').textContent='0:'+(s<10?'0':'')+s;
+  if(s===0){ $('accN').textContent='Tempo!'; $('accN').classList.add('out'); clearInterval(accT); if(audio.ready) bell(0); } }
+function startAccuse(){ $('accN').classList.remove('out'); $('accuse').hidden=false; accEnd=Date.now()+60000; clearInterval(accT); accTick(); accT=setInterval(accTick,250); }
+$('accuseBtn').onclick=startAccuse; $('accAgain').onclick=startAccuse;
+$('accClose').onclick=function(){ clearInterval(accT); $('accuse').hidden=true; };
+
+/* extra atmosphere */
+function hoot(t,f,amp){ var o=ctx.createOscillator(), v=ctx.createOscillator(), vg=ctx.createGain(), g=ctx.createGain(), lp=ctx.createBiquadFilter();
+  o.type='sine'; o.frequency.setValueAtTime(f,t); o.frequency.linearRampToValueAtTime(f*0.88,t+0.45);
+  v.frequency.value=6; vg.gain.value=6; v.connect(vg); vg.connect(o.frequency);
+  lp.type='lowpass'; lp.frequency.value=900; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(amp,t+0.08); g.gain.exponentialRampToValueAtTime(0.0001,t+0.55);
+  o.connect(lp); lp.connect(g); g.connect(master); o.start(t); v.start(t); o.stop(t+0.6); v.stop(t+0.6); }
+function owl(amp){ if(!audio.ready) return; amp=amp||0.35; var t=ctx.currentTime; hoot(t,420,amp); hoot(t+0.9,410,amp*0.8); hoot(t+1.3,400,amp); hoot(t+1.75,390,amp*0.7); }
+function organ(){
+  if(!audio.ready) return; var t=ctx.currentTime, out=ctx.createGain(), lp=ctx.createBiquadFilter(), dl=ctx.createDelay(1), fb=ctx.createGain();
+  lp.type='lowpass'; lp.frequency.value=900; dl.delayTime.value=0.33; fb.gain.value=0.4;
+  out.gain.setValueAtTime(0,t); out.gain.linearRampToValueAtTime(0.16,t+2.5); out.gain.setValueAtTime(0.16,t+6); out.gain.linearRampToValueAtTime(0,t+11);
+  out.connect(lp); lp.connect(master); lp.connect(dl); dl.connect(fb); fb.connect(dl); dl.connect(master);
+  [[146.83,0],[174.61,0],[220,0],[293.66,0],[146.83,6.5],[185,6.5],[220,6.5],[277.18,6.5]].forEach(function(n){
+    ['sawtooth','sine'].forEach(function(type,j){ var o=ctx.createOscillator(); o.type=type; o.frequency.value=n[0]*(j?2:1); o.detune.value=(Math.random()*8-4);
+      var g=ctx.createGain(); var st=t+n[1]; var en=n[1]?t+11:t+6.6;
+      g.gain.setValueAtTime(0,t); g.gain.setValueAtTime(0,st); g.gain.linearRampToValueAtTime(j?0.05:0.1,st+0.6); g.gain.setValueAtTime(j?0.05:0.1,en-0.4); g.gain.linearRampToValueAtTime(0,en);
+      o.connect(g); g.connect(out); o.start(t); o.stop(t+11.2); }); });
+}
+function steps(){ if(!audio.ready) return; var t=ctx.currentTime, d=0;
+  for(var k=0;k<7;k++){ d+=0.5+Math.random()*0.15; thump(t+d,0.5+k*0.06); burst(0.08,350,'lowpass',0.5,t+d); }
+  setTimeout(creak, 1800); }
+$('owlBtn').onclick=function(){owl(0.4)}; $('organBtn').onclick=organ; $('stepsBtn').onclick=steps;
+$('elenaBtn').onclick=function(){ say('Mamma…', {force:true,pitch:2,rate:0.5,volume:0.8,noDuck:true}); };
+$('whisperBtn').onclick=function(){ say('Elena… Elena…', {force:true,pitch:1.3,rate:0.45,volume:0.6,noDuck:true}); };
+function owlLoop(){ if(audio.ready && !seanceActive && weather.rain<0.8) owl(0.18); setTimeout(owlLoop, 180000+Math.random()*240000); }
+setTimeout(owlLoop, 120000);
+
+/* candles out during midnight */
+var CANDLES=['.w6','.w4','.w2','.w1'];
+function candleOut(i){ var el=document.querySelector('#scene '+CANDLES[i]); if(el) el.classList.add('off');
+  if(i===CANDLES.length-1) Array.prototype.forEach.call(document.querySelectorAll('#scene .glow'),function(g){g.classList.add('off')}); }
+function candlesOn(){ Array.prototype.forEach.call(document.querySelectorAll('#scene .off'),function(g){g.classList.remove('off')}); }
+
 /* ===================== GATE ===================== */
 $('enterFsBtn').onclick=function(){ toggleFs(); $('enterBtn').onclick(); };
 $('enterBtn').onclick=function(){
@@ -623,7 +789,7 @@ $('enterBtn').onclick=function(){
   if(audio.ready){ thunder(0.5); }
 };
 document.addEventListener('keydown',function(e){
-  if(e.key==='Escape' && !$('drawer').hidden){ closeSet(); return; }
+  if(e.key==='Escape'){ if(!$('clueView').hidden){ closeClue(); return; } if(!$('accuse').hidden){ $('accClose').click(); return; } if(!$('drawer').hidden){ closeSet(); return; } }
   if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT') return;
   if(e.key==='ArrowRight') $('nextBtn').click();
   else if(e.key==='ArrowLeft') $('prevBtn').click();
